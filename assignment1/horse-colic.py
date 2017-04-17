@@ -34,6 +34,7 @@ def load_data(feature_number = 1):
     data = np.array(data)
     return data
 
+# 数据摘要
 def data_abstract(data):
     numeric_attribute = [3,4,5,15,18,19,21]
     total = [i for i in range(0,feature_num)]
@@ -91,10 +92,71 @@ def data_abstract(data):
     plt.show()
     return nominal_res,numeric_res
 
-def fill_missing_data(data,mode=0):
-    numeric_attribute = [3,4,5,15,18,19,21]
+def fill_missing_data(data, numeric_attribute=[], mode=0):
+    if mode == 0:#最大频数
+        for attr in numeric_attribute:
+            clean_data = data[np.where(data[:,attr] != -1),attr]
+            freq = np.unique(clean_data, return_counts=True)
+            max_freq = freq[0][np.where(freq[1] == np.max(freq[1]))]
+            data[np.where(data[:,attr]==-1)]=max_freq
 
-    fig = plt.figure(1)
+    elif mode == 1:#相关性
+        n_attributes = data.shape[1]
+        correlation = np.zeros((n_attributes,n_attributes))
+        for i in range(0,n_attributes):
+            correlation[i,i] = float("-inf")
+            for j in range(i+1,n_attributes):
+                #剔除两列属性中缺失的部分
+                index_i = np.where(data[:,i]!=-1)
+                index_j = np.where(data[:,j]!=-1)
+                index_intersect = np.intersect1d(index_i,index_j)
+                #计算相关性
+                if index_intersect.size == 0:
+                    correlation[i,j] = float("inf")
+                else:
+                    attr_i = data[index_intersect,i]
+                    attr_j = data[index_intersect,j]
+                    correlation[i,j]= np.corrcoef(attr_i.transpose(),attr_j.transpose())[0,1] # Euclidean
+                correlation[j,i] = correlation[i,j]
+
+        missing_index = np.array(np.where(data==-1)).reshape(2,-1).transpose()
+        for idx in missing_index:
+            # 降序排列
+            corr = np.argsort(-correlation[idx[1]])
+            max_corr = 0
+            while(data[idx[0],corr[max_corr]] == -1):
+                max_corr += 1
+            data[idx[0],idx[1]] = data[idx[0],corr[max_corr]]
+
+    elif mode == 2:#相似性
+        n_samples = data.shape[0]
+        distance = np.zeros((n_samples,n_samples))
+        for i in range(0,n_samples):
+            distance[i,i] = float("inf")
+            for j in range(i+1,n_samples):
+                #剔除两组数据中缺失的部分
+                index_i = np.where(data[i,:]!=-1)
+                index_j = np.where(data[j,:]!=-1)
+                index_intersect = np.intersect1d(index_i,index_j)
+                #计算欧氏距离
+                if index_intersect.size == 0:
+                    distance[i,j] = float("inf")
+                else:
+                    data_i = data[i,index_intersect]
+                    data_j = data[j,index_intersect]
+                    distance[i,j]= np.sqrt(np.sum(np.square(data_i - data_j)))  # Euclidean
+                distance[j,i] = distance[i,j]
+
+        missing_index = np.array(np.where(data==-1)).reshape(2,-1).transpose()
+        for idx in missing_index:
+            similarity = np.argsort(distance[idx[0]])
+            min_sim = 0
+            while(data[similarity[min_sim],idx[1]] == -1):
+                min_sim += 1
+            data[idx[0],idx[1]] = data[similarity[min_sim],idx[1]]
+
+def data_visualization(data, attr):
+    plt.figure(1)
     plt.title('Histogram')
     plt.subplots_adjust(hspace=0.5)
 
@@ -109,68 +171,6 @@ def fill_missing_data(data,mode=0):
     index = 0
     for attr in numeric_attribute:
         index += 1
-        if mode == 0:#最大频数
-            clean_data = data[np.where(data[:,attr] != -1),attr]
-            freq = np.unique(clean_data, return_counts=True)
-            max_freq = freq[0][np.where(freq[1] == np.max(freq[1]))]
-            data[np.where(data[:,attr]==-1)]=max_freq
-
-        elif mode == 1:#相关性
-            n_attributes = data.shape[1]
-            correlation = np.zeros((n_attributes,n_attributes))
-            for i in range(0,n_attributes):
-                correlation[i,i] = float("-inf")
-                for j in range(i+1,n_attributes):
-                    #剔除两列属性中缺失的部分
-                    index_i = np.where(data[:,i]!=-1)
-                    index_j = np.where(data[:,j]!=-1)
-                    index_intersect = np.intersect1d(index_i,index_j)
-                    #计算相关性
-                    if index_intersect.size == 0:
-                        correlation[i,j] = float("inf")
-                    else:
-                        attr_i = data[index_intersect,i]
-                        attr_j = data[index_intersect,j]
-                        correlation[i,j]= np.corrcoef(attr_i.transpose(),attr_j.transpose())[0,1] # Euclidean
-                    correlation[j,i] = correlation[i,j]
-
-            missing_index = np.array(np.where(data==-1)).reshape(2,-1).transpose()
-            for idx in missing_index:
-                # 降序排列
-                corr = np.argsort(-correlation[idx[1]])
-                max_corr = 0
-                while(data[idx[0],corr[max_corr]] == -1):
-                    max_corr += 1
-                data[idx[0],idx[1]] = data[idx[0],corr[max_corr]]
-
-        elif mode == 2:#相似性
-            n_samples = data.shape[0]
-            distance = np.zeros((n_samples,n_samples))
-            for i in range(0,n_samples):
-                distance[i,i] = float("inf")
-                for j in range(i+1,n_samples):
-                    #剔除两组数据中缺失的部分
-                    index_i = np.where(data[i,:]!=-1)
-                    index_j = np.where(data[j,:]!=-1)
-                    index_intersect = np.intersect1d(index_i,index_j)
-                    #计算欧氏距离
-                    if index_intersect.size == 0:
-                        distance[i,j] = float("inf")
-                    else:
-                        data_i = data[i,index_intersect]
-                        data_j = data[j,index_intersect]
-                        distance[i,j]= np.sqrt(np.sum(np.square(data_i - data_j)))  # Euclidean
-                    distance[j,i] = distance[i,j]
-
-            missing_index = np.array(np.where(data==-1)).reshape(2,-1).transpose()
-            for idx in missing_index:
-                similarity = np.argsort(distance[idx[0]])
-                min_sim = 0
-                while(data[similarity[min_sim],idx[1]] == -1):
-                    min_sim += 1
-                data[idx[0],idx[1]] = data[similarity[min_sim],idx[1]]
-
-
         plt.figure(1)
         plt.subplot(3,3,index)
         plt.hist(data[:,attr].flatten(),bins=20)
@@ -191,12 +191,13 @@ def fill_missing_data(data,mode=0):
 if __name__=='__main__':
     print 'loading data...'
     data = load_data(feature_num)
+    numeric_attribute = [3,4,5,15,18,19,21]
     # print 'calculate data abstract'
     # data_abstract(data)
     # print 'visualization of clean data'
 
     print 'Fill missing data by maximum'
-    fill_missing_data(data,mode=1)
-
+    fill_missing_data(data,numeric_attribute,mode=1)
+    data_visualization(data,numeric_attribute)
 
 

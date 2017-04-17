@@ -1,22 +1,58 @@
-# Horse Colic
+[TOC]
+# Horse Colic 马的疝病分析
 
-## Data Set Information:
+## 1. 问题描述
+疝病是描述马胃肠痛的术语，这种病不一定源自马的胃肠问题，其他问题也可能引发马疝病。所给数据集是医院检测的一些指标。
+## 2. 数据集信息
 
-### 2 data files: 
-horse-colic.data: 300 training instances 
-horse-colic.test: 68 test instances 
+### 2.1 数据集文件列表
+- horse-colic.data: 300个训练实例 
+- horse-colic.test: 68个测试实例
 
-Possible class attributes: 24 (whether lesion is surgical) 
--- others include: 23, 25, 26, and 27 
+数据类型: 连续、离散、标称
 
-Many Data types: (continuous, discrete, and nominal)
+### 2.2 属性列表
 
-## Attribute Information
-<style>
-table th:th:nth-of-type(3) {
-    width: 400px;
-}
-</style>
+> 内容较多，在文末给出
+
+## 3 数据分析要求
+
+### 3.1 数据可视化和摘要
+
+#### 数据摘要
+
+- 标称属性，给出每个可能取值的频数
+- 数值属性，给出最大、最小、均值、中位数、四分位数及缺失值的个数。
+数据的可视化
+
+#### 针对数值属性
+
+- 绘制直方图，如mxPH，用qq图检验其分布是否为正态分布。
+- 绘制盒图，对离群值进行识别
+
+### 3.2 数据缺失的处理
+
+###### 数据集中有30%的值是缺失的，因此需要先处理数据中的缺失值。
+
+###### 分别使用下列四种策略对缺失值进行处理:
+
+- 将缺失部分剔除
+- 用最高频率值来填补缺失值
+- 通过属性的相关关系来填补缺失值
+- 通过数据对象之间的相似性来填补缺失值
+###### 处理后，可视化地对比新旧数据集。
+## 3 实验环境
+- Ubuntu 14.04
+- Python 2.7
+- Numpy 1.12.1
+- matplotlib 2.0.0
+- pandas 0.19.2
+- scipy 0.19.0
+
+## 4 实验过程
+
+### 4.1 数据摘要
+
 
 | No.| Attribute| Value| Explanation
 |:--------:|:---------:|:-------|:-------|
@@ -50,6 +86,3 @@ table th:th:nth-of-type(3) {
 |third number | subtype |1,2,0|1 = mechanical <br>2 = paralytic <br>0 = n/a <br>|
 |fourth number | specific code |1-0|1 = obturation <br>2 = intrinsic <br>3 = extrinsic <br>4 = adynamic <br>5 = volvulus/torsion <br>6 = intussuption <br>7 = thromboembolic <br>8 = hernia <br>9 = lipoma/slenic incarceration <br>10 = displacement <br>0 = n/a |
 |28|cp_data| 1 = Yes <br>2 = No|is pathology data present for this case? <br>this variable is of no significance since pathology data is not included or collected for these cases
-
-
-
