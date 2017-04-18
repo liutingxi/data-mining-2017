@@ -167,14 +167,16 @@ total protein |89.0|3.30|24.46|7.5|6.5|33|
 abdomcentesis total protein |10.1|0.10|3.02|2.25|2.0|198|
 
 #### 4.1.3 数值属性的可视化
+可视化工具采用了matplotlib和scipy两个Python库
+直方图和盒图采用matplotlib.pyplot中的hist和boxplot函数进行绘制
+Q-Q图采用scipy.stats.probplot函数进行绘制
 
 ##### 直方图
-
-
 ![](https://github.com/liutingxi/data-mining-2017/blob/master/assignment1/Result/0_hist.png)
-
 ##### Q-Q图
 ![](https://github.com/liutingxi/data-mining-2017/raw/master/assignment1/Result/0_qq.png)
+
+> 可以看出，rectal temperature 和 packed cell volume两种属性的分布近似于正态分布
 
 ##### 盒图
 ![](Result/0_box.png)
