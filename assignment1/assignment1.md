@@ -166,7 +166,54 @@ packed cell volume |75.0|23.0|46.30|45.0|38.0|29|
 total protein |89.0|3.30|24.46|7.5|6.5|33|
 abdomcentesis total protein |10.1|0.10|3.02|2.25|2.0|198|
 
+#### 4.1.3 数值属性的可视化
 
+##### 直方图
+
+
+![](https://github.com/liutingxi/data-mining-2017/blob/master/assignment1/Result/0_hist.png)
+
+##### Q-Q图
+![](https://github.com/liutingxi/data-mining-2017/raw/master/assignment1/Result/0_qq.png)
+
+##### 盒图
+![](Result/0_box.png)
+
+### 4.2 数据缺失的处理 
+
+#### 4.2.1 将缺失部分剔除
+缺省方式，已经在上文给出
+#### 4.2.2 用最高频率值来填补缺失值
+##### 直方图
+
+![](Result/1_hist.png)
+
+##### Q-Q图
+![](Result/1_qq.png)
+
+##### 盒图
+![](Result/1_box.png)
+#### 4.2.3 通过属性的相关关系来填补缺失值
+##### 直方图
+
+![](Result/2_hist.png)
+
+##### Q-Q图
+![](Result/2_qq.png)
+
+##### 盒图
+![](Result/2_box.png)
+
+#### 4.2.4 通过数据对象之间的相似性来填补缺失值
+##### 直方图
+
+![](Result/3_hist.png)
+
+##### Q-Q图
+![](Result/3_qq.png)
+
+##### 盒图
+![](Result/3_box.png)
 
 | No.| Attribute| Value| Explanation
 |:--------:|:---------:|:-------|:-------|
